@@ -157,7 +157,7 @@ def admin_providers():
     if session.get("role") != "admin":
         return redirect(url_for("login"))
 
-     message = None
+    message = None
     error = None
 
 
