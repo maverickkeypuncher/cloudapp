@@ -72,7 +72,7 @@ def admin_request():
 
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM requests ORDER BY created_at DESC")
+    cursor.execute("SELECT * FROM userrequests ORDER BY created_at DESC")
     rows = cursor.fetchall()
     cursor.close()
     conn.close()
