@@ -79,6 +79,33 @@ def admin_request():
 
     return render_template("admin_requests.html", requests=rows)
 
+@admin.route("/admin/providers", methods=["GET", "POST"])
+def admin_providers():
+    if session.get("role") != "admin":
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        provider = request.form.get("provider")
+        url = request.form.get("url")
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute(
+            "INSERT INTO providers (provider_name, url, username, password) VALUES (%s, %s, %s, %s)",
+            (provider, url, username, password)
+        )
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return redirect(url_for("admin.admin_providers"))
+
+    return render_template("providers.html")
+
+
+
 @app.route("/logout")
 def logout():
     session.clear()
