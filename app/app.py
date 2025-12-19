@@ -79,7 +79,7 @@ def admin_request():
 
     return render_template("admin_requests.html", requests=rows)
 
-@admin.route("/admin/providers", methods=["GET", "POST"])
+@app.route("/admin/providers", methods=["GET", "POST"])
 def admin_providers():
     if session.get("role") != "admin":
         return redirect(url_for("login"))
