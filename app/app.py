@@ -101,7 +101,7 @@ def admin_providers():
         cursor.close()
         conn.close()
 
-        return redirect(url_for("admin.admin_providers"))
+        return redirect(url_for("admin_providers"))
 
     return render_template("providers.html")
 
