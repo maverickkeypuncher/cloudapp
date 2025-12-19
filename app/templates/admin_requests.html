@@ -2,30 +2,82 @@
 <html>
 <head>
     <title>Admin Requests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 80%;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: auto;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+
+        td {
+            padding: 10px;
+            text-align: center;
+            background-color: #f9fbfd;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #eef3f8;
+        }
+
+        tr:hover td {
+            background-color: #dce7f5;
+        }
+    </style>
 </head>
 <body>
-    <h1>All User Requests</h1>
+    <div class="container">
+        <h1>All User Requests</h1>
 
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Username</th>
-            <th>Request Type</th>
-            <th>Details</th>
-            <th>Status</th>
-            <th>Created At</th>
-        </tr>
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Request Type</th>
+                <th>Details</th>
+                <th>Status</th>
+                <th>Created At</th>
+            </tr>
 
-        {% for r in requests %}
-        <tr>
-            <td>{{ r.id }}</td>
-            <td>{{ r.username }}</td>
-            <td>{{ r.request_type }}</td>
-            <td>{{ r.details }}</td>
-            <td>{{ r.status }}</td>
-            <td>{{ r.created_at }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+            {% for r in requests %}
+            <tr>
+                <td>{{ r.id }}</td>
+                <td>{{ r.username }}</td>
+                <td>{{ r.request_type }}</td>
+                <td>{{ r.details }}</td>
+                <td>{{ r.status }}</td>
+                <td>{{ r.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </body>
 </html>
