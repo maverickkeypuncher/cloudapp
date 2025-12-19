@@ -176,9 +176,9 @@ def admin_providers():
 
             #"INSERT INTO providers (provider_name, url, username, password) VALUES (%s, %s, %s, %s)",
             #(provider, url, username, password)
-        )
-        conn.commit()
-        message = "Provider added successfully."
+            )
+            conn.commit()
+            message = "Provider added successfully."
         except error as e:
             if e.errno == 1062:
                 error = f"{provider} provider already exists for {environment} environment."
