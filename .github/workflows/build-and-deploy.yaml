@@ -31,7 +31,7 @@ jobs:
     - name: Clone GitOps repo
       run: |
         #git clone https://${{ secrets.CR_PAT }}@github.com/maverickkeypuncher/cloudapp.git gitops 
-        git clone https://${{ secrets.CR_PAT }}@github.com/maverickkeypuncher/cloudapp-manifests.git gitops 
+        git clone https://${{ secrets.CR_PAT }}@github.com/maverickkeypuncher/cloudapp-k8s.git gitops 
         #"${{ secrets.GITOPS_REPO }}" gitops
 
     - name: Update image tag in manifests
