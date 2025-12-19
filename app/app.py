@@ -57,8 +57,8 @@ def login():
 
         if row and row["password"] == password:
             session["username"] = username
-            session["role"] = row["role"]
-            #session["role"] = row.get("role","user")
+            #session["role"] = row["role"]
+            session["role"] = row.get("role","user")
             return redirect(url_for("form"))
         else:
             error = "Invalid username or password"
