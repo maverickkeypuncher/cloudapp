@@ -65,7 +65,7 @@ def login():
     return render_template("login.html", error=error)
 
 
-@app.route("/admin/request")
+@app.route("/admin/requests")
 def admin_request():
     if session.get("role") != "admin":
         return redirect(url_for("login"))
