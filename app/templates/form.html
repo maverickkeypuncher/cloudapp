@@ -6,7 +6,31 @@
         body {
             background-color: #f2f2f2;
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
+
+        /* Navigation Bar */
+        .navbar {
+            background-color: #007bff;
+            padding: 15px 25px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
         .container {
             width: 450px;
             margin: 120px auto;
@@ -17,9 +41,11 @@
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             text-align: left;
         }
+
         h2 {
             text-align: center;
         }
+
         input, select {
             width: 95%;
             padding: 10px;
@@ -27,6 +53,7 @@
             border-radius: 4px;
             border: 1px solid #ccc;
         }
+
         button {
             width: 100%;
             padding: 12px;
@@ -37,9 +64,11 @@
             cursor: pointer;
             font-size: 15px;
         }
+
         button:hover {
             background-color: #1976D2;
         }
+
         a {
             display: block;
             margin-top: 15px;
@@ -59,6 +88,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .modal-box {
             background: white;
             padding: 20px;
@@ -67,9 +97,11 @@
             text-align: left;
             box-shadow: 0 0 10px rgba(0,0,0,0.3);
         }
+
         .modal-box h3 {
             margin-top: 0;
         }
+
         .close-btn {
             background-color: #555;
             color: white;
@@ -79,12 +111,26 @@
             cursor: pointer;
             float: right;
         }
+
         .field-label {
             font-weight: bold;
         }
     </style>
 </head>
 <body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div>
+            <a href="/requests">My Requests</a>
+            {% if session.role == "admin" %}
+            <a href="/admin/requests">Admin Dashboard</a>
+            {% endif %}
+        </div>
+        <div>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
 
     <div class="container">
         <h2>Provision Cloud Service</h2>
@@ -123,14 +169,9 @@
 
             <button type="submit">Submit</button>
         </form>
-	<a href="/requests">View My Requests</a>
-	<a href="/logout">Logout</a>
-	{% if session.role == "admin" %}
-	<a href="/admin/requests">Admin Dashboard</a>
-	{% endif %}
-
 
     </div>
+
     <!-- Modal -->
     <div class="modal-overlay" id="modal">
         <div class="modal-box">
@@ -150,47 +191,23 @@
         const modal = document.getElementById("modal");
 
         form.addEventListener("submit", async function(event) {
-            event.preventDefault(); // prevent page reload
+            event.preventDefault();
+
             const data = {
-            project_name: document.getElementById("project_name").value,
-            datacenter: document.getElementById("datacenter").value,
-            cpu: document.getElementById("cpu").value,
-            ram: document.getElementById("ram").value,
-            num_servers: document.getElementById("num_servers").value,
-            storage: document.getElementById("storage").value
-        };
+                project_name: document.getElementById("project_name").value,
+                datacenter: document.getElementById("datacenter").value,
+                cpu: document.getElementById("cpu").value,
+                ram: document.getElementById("ram").value,
+                num_servers: document.getElementById("num_servers").value,
+                storage: document.getElementById("storage").value
+            };
 
-        await fetch("/form", {
-         method: "POST",
-         headers: {"Content-Type": "application/json"},
-         body: JSON.stringify(data)
+            await fetch("/form", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify(data)
+            });
         });
-
-
-
-            // Read values from the form
-            const projectName = document.getElementById("project_name").value;
-            const datacenter = document.getElementById("datacenter").value;
-            const cpu = document.getElementById("cpu").value;
-            const ram = document.getElementById("ram").value;
-            const numServers = document.getElementById("num_servers").value;
-            const storage = document.getElementById("storage").value;
-
-            // Populate modal fields
-            document.getElementById("out_project_name").innerText = projectName;
-            document.getElementById("out_datacenter").innerText = datacenter;
-            document.getElementById("out_cpu").innerText = cpu;
-            document.getElementById("out_ram").innerText = ram;
-            document.getElementById("out_num_servers").innerText = numServers;
-            document.getElementById("out_storage").innerText = storage;
-
-            // Show modal
-            modal.style.display = "flex";
-        });
-
-        function closeModal() {
-            modal.style.display = "none";
-        }
     </script>
 
 </body>
