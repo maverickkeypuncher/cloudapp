@@ -22,11 +22,11 @@ jobs:
 
     - name: Build image with nerdctl
       run: |
-        nerdctl build -t ghcr.io/${{ github.repository_owner }}/cloudapp-app:${{ steps.vars.outputs.TAG }} ./app
+        nerdctl build -t ghcr.io/${{ github.repository_owner }}/dj-cloudapp:${{ steps.vars.outputs.TAG }} ./app
 
     - name: Push image with nerdctl
       run: |
-        nerdctl push ghcr.io/${{ github.repository_owner }}/cloudapp-app:${{ steps.vars.outputs.TAG }}
+        nerdctl push ghcr.io/${{ github.repository_owner }}/dj-cloudapp:${{ steps.vars.outputs.TAG }}
 
     - name: Clone GitOps repo
       run: |
@@ -36,7 +36,7 @@ jobs:
     - name: Update image tag in manifests
       run: |
         cd gitops
-        sed -i 's#image: ghcr.io.*/cloudapp-app:.*#image: ghcr.io/'"${{ github.repository_owner }}"'/cloudapp-app:'"${{ steps.vars.outputs.TAG }}"'#' /opt/projects/cloudapp-manifests/k8s/app-deployment.yaml
+        sed -i 's#image: ghcr.io.*/dj-cloudapp:.*#image: ghcr.io/'"${{ github.repository_owner }}"'/dj-cloudapp:'"${{ steps.vars.outputs.TAG }}"'#' k8s/app-deployment.yaml
         git config user.name "${{ secrets.GIT_USER_NAME }}"
         git config user.email "${{ secrets.GIT_USER_EMAIL }}"
         git commit -am "Update image tag to ${{ steps.vars.outputs.TAG }}" || echo "No changes"
