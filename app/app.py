@@ -49,14 +49,15 @@ def login():
 
         conn = get_db_connection()
         cursor = conn.cursor(dictionary=True)
-        cursor.execute("SELECT password FROM users WHERE username=%s", (username,))
+        cursor.execute("SELECT password, role FROM users WHERE username=%s", (username,))
         row = cursor.fetchone()
         cursor.close()
         conn.close()
 
         if row and row["password"] == password:
             session["username"] = username
-            session["role"] = row.get("role")
+            session["role"] = row["role"]
+            session["role"] = row.get("role","user')
             return redirect(url_for("form"))
         else:
             error = "Invalid username or password"
