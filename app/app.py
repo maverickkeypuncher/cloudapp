@@ -3,6 +3,8 @@
 
 from flask import Flask, render_template, request, redirect, session, url_for
 from db import get_db_connection
+from mysql.connector import Error
+
 
 app = Flask(__name__)
 app.secret_key = "CHANGE_THIS_SECRET_KEY"  # for sessions; later we can move this to a Secret too
@@ -80,30 +82,116 @@ def admin_request():
 
     return render_template("admin_requests.html", requests=rows)
 
+@app.route("/admin/providers/edit/<int:id>", methods=["GET", "POST"])
+def edit_provider(id):
+    if session.get("role") != "admin":
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    # Fetch existing provider
+    cursor.execute("SELECT * FROM providers WHERE id=%s", (id,))
+    provider = cursor.fetchone()
+
+    if not provider:
+        cursor.close()
+        conn.close()
+        return "Provider not found"
+
+    if request.method == "POST":
+        provider_name = request.form.get("provider")
+        environment = request.form.get("environment")
+        url = request.form.get("url")
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        cursor.execute("""
+            UPDATE providers 
+            SET provider_name=%s, environment=%s, url=%s, username=%s, password=%s
+            WHERE id=%s
+        """, (provider_name, environment, url, username, password, id))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return redirect(url_for("providers_list"))
+
+    cursor.close()
+    conn.close()
+    return render_template("provider_edit.html", provider=provider)
+
+@app.route("/admin/providers/delete/<int:id>")
+def delete_provider(id):
+    if session.get("role") != "admin":
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM providers WHERE id=%s", (id,))
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return redirect(url_for("providers_list"))
+
+@app.route("/admin/providers/list")
+def providers_list():
+    if session.get("role") != "admin":
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM providers")
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return render_template("providers_list.html", providers=rows)
+
 @app.route("/admin/providers", methods=["GET", "POST"])
 def admin_providers():
     if session.get("role") != "admin":
         return redirect(url_for("login"))
 
+     message = None
+    error = None
+
+
     if request.method == "POST":
         provider = request.form.get("provider")
+        environment = request.form.get("environment")
         url = request.form.get("url")
         username = request.form.get("username")
         password = request.form.get("password")
+        try:
+          conn = get_db_connection()
+          cursor = conn.cursor()
+          cursor.execute(
+            "INSERT INTO providers (provider_name, environment, url, username, password) VALUES (%s, %s, %s, %s, %s)",
+             (provider, environment, url, username, password)
 
-        conn = get_db_connection()
-        cursor = conn.cursor()
-        cursor.execute(
-            "INSERT INTO providers (provider_name, url, username, password) VALUES (%s, %s, %s, %s)",
-            (provider, url, username, password)
+            #"INSERT INTO providers (provider_name, url, username, password) VALUES (%s, %s, %s, %s)",
+            #(provider, url, username, password)
         )
         conn.commit()
-        cursor.close()
-        conn.close()
+        message = "Provider added successfully."
+        except error as e:
+            if e.errno == 1062:
+                error = f"{provider} provider already exists for {environment} environment."
+            else:
+                error = "An error occurred while adding provider."
 
-        return redirect(url_for("admin_providers"))
+        finally:
+            cursor.close()
+            conn.close()
 
-    return render_template("providers.html")
+        #return redirect(url_for("admin_providers"))
+
+    return render_template("providers.html",message=message, error=error)
 
 
 

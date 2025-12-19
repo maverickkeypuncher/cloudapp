@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Provider</title>
+</head>
+<body>
+
+<div class="container">
+    <h2>Edit Provider</h2>
+
+    <form method="POST">
+
+        <label>Provider</label>
+        <select name="provider" required>
+            <option value="vmware" {% if provider.provider_name == "vmware" %}selected{% endif %}>VMware vCenter</option>
+            <option value="openstack" {% if provider.provider_name == "openstack" %}selected{% endif %}>OpenStack</option>
+            <option value="kubernetes" {% if provider.provider_name == "kubernetes" %}selected{% endif %}>Kubernetes</option>
+        </select>
+
+        <label>Environment</label>
+        <select name="environment" required>
+            <option value="Dev" {% if provider.environment == "Dev" %}selected{% endif %}>Dev</option>
+            <option value="Production" {% if provider.environment == "Production" %}selected{% endif %}>Production</option>
+            <option value="Non-Production" {% if provider.environment == "Non-Production" %}selected{% endif %}>Non-Production</option>
+        </select>
+
+        <label>URL</label>
+        <input type="text" name="url" value="{{ provider.url }}" required>
+
+        <label>Username</label>
+        <input type="text" name="username" value="{{ provider.username }}" required>
+
+        <label>Password</label>
+        <input type="password" name="password" value="{{ provider.password }}" required>
+
+        <button type="submit">Update Provider</button>
+    </form>
+</div>
+
+</body>
+</html>
