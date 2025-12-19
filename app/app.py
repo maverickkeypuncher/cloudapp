@@ -65,6 +65,20 @@ def login():
     return render_template("login.html", error=error)
 
 
+@app.route("/admin/request")
+def admin_request():
+    if session.get("role") != "admin":
+        return redirect(url_for("login"))
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM requests ORDER BY created_at DESC")
+    rows = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return render_template("admin_requests.html", requests=rows)
+
 @app.route("/logout")
 def logout():
     session.clear()
