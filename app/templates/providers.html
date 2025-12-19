@@ -70,7 +70,8 @@
         <div>
             <a href="/form">My Request</a>
             <a href="/admin/requests">Admin Dashboard</a>
-            <a href="/admin/providers">Providers</a>
+            <a href="/admin/providers">Add Providers</a>
+	    <a href="/admin/providers/list">View Configured Providers</a>
         </div>
         <div>
             <a href="/logout">Logout</a>
@@ -109,6 +110,17 @@
             <input type="password" name="password" id="password" required>
 
             <button type="submit">Save Provider</button>
+	    {% if message %}
+    		<p style="color: green; font-weight: bold; text-align:center;">
+        	{{ message }}
+    		</p>
+	    {% endif %}
+
+	    {% if error %}
+    		<p style="color: red; font-weight: bold; text-align:center;">
+        	{{ error }}
+    	       </p>
+	    {% endif %}
         </form>
     </div>
 
