@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Provision Cloud Service</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            width: 450px;
+            margin: 120px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            text-align: left;
+        }
+        h2 {
+            text-align: center;
+        }
+        input, select {
+            width: 95%;
+            padding: 10px;
+            margin: 8px 0 15px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+        button:hover {
+            background-color: #1976D2;
+        }
+        a {
+            display: block;
+            margin-top: 15px;
+            text-align: center;
+            color: #333;
+        }
+
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-box {
+            background: white;
+            padding: 20px;
+            width: 400px;
+            border-radius: 8px;
+            text-align: left;
+            box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        }
+        .modal-box h3 {
+            margin-top: 0;
+        }
+        .close-btn {
+            background-color: #555;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+        }
+        .field-label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Provision Cloud Service</h2>
+
+        <form id="provisionForm">
+
+            Project Name:
+            <input type="text" name="project_name" id="project_name" required>
+
+            Datacenter:
+            <select name="datacenter" id="datacenter">
+                {% for dc in datacenters %}
+                <option>{{ dc }}</option>
+                {% endfor %}
+            </select>
+
+            CPU:
+            <input type="text" name="cpu" id="cpu" required>
+
+            RAM:
+            <input type="text" name="ram" id="ram" required>
+
+            Number of Servers:
+            <select name="num_servers" id="num_servers">
+                {% for n in num_servers_options %}
+                <option>{{ n }}</option>
+                {% endfor %}
+            </select>
+
+            Storage:
+            <select name="storage" id="storage">
+                {% for s in storage_options %}
+                <option>{{ s }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Submit</button>
+        </form>
+	<a href="/requests">View My Requests</a>
+	<a href="/logout">Logout</a>
+	{% if session.role == "admin" %}
+	<a href="/admin/requests">Admin Dashboard</a>
+	{% endif %}
+
+
+    </div>
+    <!-- Modal -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-box">
+            <button class="close-btn" onclick="closeModal()">Close</button>
+            <h3>Requested Cloud Service Details</h3>
+            <p><span class="field-label">Project Name:</span> <span id="out_project_name"></span></p>
+            <p><span class="field-label">Datacenter:</span> <span id="out_datacenter"></span></p>
+            <p><span class="field-label">CPU:</span> <span id="out_cpu"></span></p>
+            <p><span class="field-label">RAM:</span> <span id="out_ram"></span></p>
+            <p><span class="field-label">Number of Servers:</span> <span id="out_num_servers"></span></p>
+            <p><span class="field-label">Storage:</span> <span id="out_storage"></span></p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById("provisionForm");
+        const modal = document.getElementById("modal");
+
+        form.addEventListener("submit", async function(event) {
+            event.preventDefault(); // prevent page reload
+            const data = {
+            project_name: document.getElementById("project_name").value,
+            datacenter: document.getElementById("datacenter").value,
+            cpu: document.getElementById("cpu").value,
+            ram: document.getElementById("ram").value,
+            num_servers: document.getElementById("num_servers").value,
+            storage: document.getElementById("storage").value
+        };
+
+        await fetch("/form", {
+         method: "POST",
+         headers: {"Content-Type": "application/json"},
+         body: JSON.stringify(data)
+        });
+
+
+
+            // Read values from the form
+            const projectName = document.getElementById("project_name").value;
+            const datacenter = document.getElementById("datacenter").value;
+            const cpu = document.getElementById("cpu").value;
+            const ram = document.getElementById("ram").value;
+            const numServers = document.getElementById("num_servers").value;
+            const storage = document.getElementById("storage").value;
+
+            // Populate modal fields
+            document.getElementById("out_project_name").innerText = projectName;
+            document.getElementById("out_datacenter").innerText = datacenter;
+            document.getElementById("out_cpu").innerText = cpu;
+            document.getElementById("out_ram").innerText = ram;
+            document.getElementById("out_num_servers").innerText = numServers;
+            document.getElementById("out_storage").innerText = storage;
+
+            // Show modal
+            modal.style.display = "flex";
+        });
+
+        function closeModal() {
+            modal.style.display = "none";
+        }
+    </script>
+
+</body>
+</html>
