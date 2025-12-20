@@ -110,6 +110,27 @@
         tr:hover {
             background-color: #f1f7ff;
         }
+
+        /* PAGINATION */
+        .pagination {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .pagination button {
+            padding: 6px 12px;
+            border: 1px solid #003366;
+            background-color: white;
+            color: #003366;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
@@ -137,8 +158,23 @@
     <div class="content">
         <h2>Admin Dashboard – All User Requests</h2>
 
+        <!-- SEARCH BAR -->
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search by user, project, datacenter..." 
+            style="
+                width: 300px;
+                padding: 8px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            "
+        >
+
+        <!-- TABLE WITH SCROLL -->
         <div class="table-container">
-            <table>
+            <table id="requestsTable">
                 <thead>
                     <tr>
                         <th>User</th>
@@ -169,7 +205,60 @@
             </table>
         </div>
 
+        <!-- PAGINATION -->
+        <div class="pagination">
+            <button id="prevBtn">Previous</button>
+            <button id="nextBtn">Next</button>
+        </div>
     </div>
+
+<!-- SEARCH + PAGINATION SCRIPT -->
+<script>
+    const rowsPerPage = 10;
+    let currentPage = 1;
+
+    const table = document.getElementById("requestsTable");
+    const rows = table.querySelectorAll("tbody tr");
+
+    function renderTable() {
+        let start = (currentPage - 1) * rowsPerPage;
+        let end = start + rowsPerPage;
+
+        rows.forEach((row, index) => {
+            row.style.display = (index >= start && index < end) ? "" : "none";
+        });
+
+        document.getElementById("prevBtn").disabled = currentPage === 1;
+        document.getElementById("nextBtn").disabled = end >= rows.length;
+    }
+
+    document.getElementById("prevBtn").onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    };
+
+    document.getElementById("nextBtn").onclick = () => {
+        if ((currentPage * rowsPerPage) < rows.length) {
+            currentPage++;
+            renderTable();
+        }
+    };
+
+    // SEARCH FILTER
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+        let filter = this.value.toLowerCase();
+
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(filter) ? "" : "none";
+        });
+    });
+
+    // Initial render
+    renderTable();
+</script>
 
 </body>
 </html>
