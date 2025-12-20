@@ -1,26 +1,26 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Provision Cloud Service</title>
+    <title>Cloud Request Form</title>
     <style>
         body {
             margin: 0;
-	    font-size: 14px;
             font-family: Arial, sans-serif;
             background-color: #f4f6f9;
+            font-size: 14px;
         }
 
         /* LEFT SIDEBAR */
         .sidebar {
             width: 200px;
-            background-color: #d7e9ff; /* light blue */
+            background-color: #d7e9ff;
             color: #003366;
             height: 100vh;
             padding-top: 20px;
             position: fixed;
             left: 0;
             top: 0;
-            font-size: 13px; /* smaller font */
+            font-size: 13px;
             border-right: 1px solid #bcd4f5;
         }
 
@@ -48,7 +48,7 @@
             width: calc(100% - 200px);
             height: 55px;
             background-color: #d7e9ff;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #bcd4f5;
             display: flex;
             justify-content: flex-end;
             align-items: center;
@@ -79,6 +79,7 @@
 
         h2 {
             text-align: center;
+            margin-bottom: 20px;
         }
 
         input, select {
@@ -87,7 +88,7 @@
             margin: 8px 0 15px 0;
             border-radius: 4px;
             border: 1px solid #ccc;
-	    font-size: 14px;
+            font-size: 14px;
         }
 
         button {
@@ -98,11 +99,12 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 14px;
+            font-weight: bold;
         }
 
         button:hover {
-            background-color: #0055aa;
+            background-color: #1e7fe6;
         }
     </style>
 </head>
@@ -128,43 +130,69 @@
 
     <!-- MAIN CONTENT -->
     <div class="content">
-        <h2>Provision Cloud Service</h2>
+        <h2>Cloud Request Form</h2>
 
-        <form id="provisionForm" method="POST" action="/form">
+        <form id="requestForm">
 
-            Project Name:
-            <input type="text" name="project_name" id="project_name" required>
+            <label>Project Name</label>
+            <input type="text" name="project_name" required>
 
-            Datacenter:
-            <select name="datacenter" id="datacenter">
+            <label>Datacenter</label>
+            <select name="datacenter" required>
                 {% for dc in datacenters %}
-                <option>{{ dc }}</option>
+                <option value="{{ dc }}">{{ dc }}</option>
                 {% endfor %}
             </select>
 
-            CPU:
-            <input type="text" name="cpu" id="cpu" required>
+            <label>CPU</label>
+            <input type="number" name="cpu" required>
 
-            RAM:
-            <input type="text" name="ram" id="ram" required>
+            <label>RAM (GB)</label>
+            <input type="number" name="ram" required>
 
-            Number of Servers:
-            <select name="num_servers" id="num_servers">
+            <label>Number of Servers</label>
+            <select name="num_servers" required>
                 {% for n in num_servers_options %}
-                <option>{{ n }}</option>
+                <option value="{{ n }}">{{ n }}</option>
                 {% endfor %}
             </select>
 
-            Storage:
-            <select name="storage" id="storage">
+            <label>Storage</label>
+            <select name="storage" required>
                 {% for s in storage_options %}
-                <option>{{ s }}</option>
+                <option value="{{ s }}">{{ s }}</option>
                 {% endfor %}
             </select>
 
-            <button type="submit">Submit</button>
+            <button type="submit">Submit Request</button>
         </form>
     </div>
+
+    <!-- AJAX SUBMISSION + POPUP -->
+    <script>
+        document.getElementById("requestForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const jsonData = Object.fromEntries(formData.entries());
+
+            fetch("/form", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(jsonData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "ok") {
+                    alert("Request submitted successfully!");
+                    document.getElementById("requestForm").reset();
+                }
+            })
+            .catch(err => {
+                alert("Something went wrong while submitting the request.");
+            });
+        });
+    </script>
 
 </body>
 </html>
