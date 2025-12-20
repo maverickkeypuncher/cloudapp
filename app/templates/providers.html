@@ -1,163 +1,127 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Configured Providers</title>
+    <title>Provider Configuration</title>
     <style>
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
             background-color: #f4f6f9;
-            display: flex;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
-        .sidebar {
-            width: 230px;
-            background-color: #1e3a8a;
+        .navbar {
+            background-color: #007bff;
+            padding: 15px 25px;
             color: white;
-            height: 100vh;
-            padding-top: 20px;
-            position: fixed;
-            left: 0;
-            top: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 20px;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 12px 20px;
+        .navbar a {
             color: white;
             text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: 450px;
+            margin: 60px auto;
+            padding: 25px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
             font-size: 15px;
         }
 
-        .sidebar a:hover {
-            background-color: #3b82f6;
-        }
-
-        .topbar {
-            width: 100%;
-            height: 60px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #ddd;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            padding-right: 25px;
-            position: fixed;
-            left: 230px;
-            top: 0;
-            z-index: 10;
-        }
-
-        .topbar a {
-            color: #1e3a8a;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .content {
-		margin-left: 260px;
-		margin-top: 80px;
-    		width: 450px;
-    		background: white;
-    		padding: 25px;
-    		border-radius: 10px;
-    		box-shadow: 0 0 12px rgba(0,0,0,0.1);
-    		overflow-y: auto;      /* ✅ FIX */
-    		max-height: 80vh;      /* ✅ FIX */
-	}
-
-
-        
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background-color: #1e3a8a;
-            color: white;
-            padding: 12px;
-        }
-
-        td {
-            padding: 10px;
-            text-align: center;
-            background-color: #f9fbfd;
-        }
-
-        tr:nth-child(even) td {
-            background-color: #eef3f8;
-        }
-
-        tr:hover td {
-            background-color: #dce7f5;
-        }
-
-        .action-link {
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .edit {
-            color: blue;
-        }
-
-        .delete {
-            color: red;
+        button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2>Cloud Portal</h2>
-
-        <a href="/requests">My Requests</a>
-
-        {% if session.role == "admin" %}
-        <a href="/admin/requests">Admin Dashboard</a>
-        <a href="/admin/providers">Add Provider</a>
-        <a href="/admin/providers/list">View Configured Providers</a>
-        {% endif %}
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div>
+            <a href="/form">My Request</a>
+            <a href="/admin/requests">Admin Dashboard</a>
+            <a href="/admin/providers">Add Providers</a>
+	    <a href="/admin/providers/list">View Configured Providers</a>
+        </div>
+        <div>
+            <a href="/logout">Logout</a>
+        </div>
     </div>
 
-    <div class="topbar">
-        <a href="/logout">Logout</a>
-    </div>
+    <div class="container">
+        <h2>Configure Provider</h2>
 
-    <div class="content">
-        <h2>Configured Providers</h2>
+        <form method="POST">
 
-        <table>
-            <tr>
-                <th>Provider</th>
-                <th>Environment</th>
-                <th>URL</th>
-                <th>Username</th>
-                <th>Actions</th>
-            </tr>
+            <label>Select Provider</label>
+            <select name="provider" id="provider" required>
+                <option value="">Select Provider</option>
+                <option value="vmware">VMware vCenter</option>
+                <option value="openstack">OpenStack</option>
+                <option value="kubernetes">Kubernetes</option>
+            </select>
 
-            {% for p in providers %}
-            <tr>
-                <td>{{ p.provider_name }}</td>
-                <td>{{ p.environment }}</td>
-                <td>{{ p.url }}</td>
-                <td>{{ p.username }}</td>
-                <td>
-                    <a href="/admin/providers/edit/{{ p.id }}" class="action-link edit">Edit</a>
-                    <a href="/admin/providers/delete/{{ p.id }}" class="action-link delete"
-                       onclick="return confirm('Delete this provider?');">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+	    <label>Environment</label>
+	    <select name="environment" required>
+    		<option value="">Select Environment</option>
+    		<option value="Dev">Dev</option>
+    		<option value="Production">Production</option>
+    		<option value="Non-Production">Non-Production</option>
+	    </select>
+
+
+            <label>Provider URL</label>
+            <input type="text" name="url" id="url" placeholder="https://example.com" required>
+
+            <label>Username</label>
+            <input type="text" name="username" id="username" required>
+
+            <label>Password</label>
+            <input type="password" name="password" id="password" required>
+
+            <button type="submit">Save Provider</button>
+	    {% if message %}
+    		<p style="color: green; font-weight: bold; text-align:center;">
+        	{{ message }}
+    		</p>
+	    {% endif %}
+
+	    {% if error %}
+    		<p style="color: red; font-weight: bold; text-align:center;">
+        	{{ error }}
+    	       </p>
+	    {% endif %}
+        </form>
     </div>
 
 </body>

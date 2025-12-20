@@ -4,86 +4,54 @@
     <title>Configured Providers</title>
     <style>
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
             background-color: #f4f6f9;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
         }
 
-        .sidebar {
-            width: 230px;
-            background-color: #1e3a8a;
+        /* Navigation Bar */
+        .navbar {
+            background-color: #007bff;
+            padding: 15px 25px;
             color: white;
-            height: 100vh;
-            padding-top: 20px;
-            position: fixed;
-            left: 0;
-            top: 0;
-        }
-
-        .sidebar h2 {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 20px;
-        }
-
-        .sidebar a {
-            display: block;
-            padding: 12px 20px;
-            color: white;
-            text-decoration: none;
-            font-size: 15px;
-        }
-
-        .sidebar a:hover {
-            background-color: #3b82f6;
-        }
-
-        .topbar {
-            width: calc(100% - 230px);
-            height: 60px;
-            background-color: #ffffff;
-            border-bottom: 1px solid #ddd;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
-            padding-right: 25px;
-            position: fixed;
-            left: 230px;
-            top: 0;
-            z-index: 10;
         }
 
-        .topbar a {
-            color: #1e3a8a;
-            font-weight: bold;
+        .navbar a {
+            color: white;
             text-decoration: none;
+            margin-right: 20px;
+            font-weight: bold;
         }
 
-        .content {
-            margin-left: 260px;
-            margin-top: 80px;
-            width: calc(100% - 300px);
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            width: 80%;
+            margin: 50px auto;
             background: white;
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 0 12px rgba(0,0,0,0.1);
-            overflow-x: auto;
-	    max-width: 1000px
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 700px;
         }
 
         th {
-            background-color: #1e3a8a;
+            background-color: #007bff;
             color: white;
             padding: 12px;
             text-align: center;
@@ -102,65 +70,53 @@
         tr:hover td {
             background-color: #dce7f5;
         }
-
-        .action-link {
-            font-weight: bold;
-            margin-right: 10px;
-        }
-
-        .edit {
-            color: blue;
-        }
-
-        .delete {
-            color: red;
-        }
     </style>
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2>Cloud Portal</h2>
-
-        <a href="/requests">My Requests</a>
-
-        {% if session.role == "admin" %}
-        <a href="/admin/requests">Admin Dashboard</a>
-        <a href="/admin/providers">Add Provider</a>
-        <a href="/admin/providers/list">View Configured Providers</a>
-        {% endif %}
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div>
+            <a href="/form">My Request</a>
+            <a href="/admin/requests">Admin Dashboard</a>
+            <a href="/admin/providers">Add Provider</a>
+            <a href="/admin/providers/list">View Providers</a>
+        </div>
+        <div>
+            <a href="/logout">Logout</a>
+        </div>
     </div>
 
-    <div class="topbar">
-        <a href="/logout">Logout</a>
-    </div>
-
-    <div class="content">
+    <div class="container">
         <h2>Configured Providers</h2>
+	<table>
+    	<tr>
+        	<th>Provider</th>
+        	<th>Environment</th>
+     		   <th>URL</th>
+      		  <th>Username</th>
+      		  <th>Actions</th>
+    	</tr>
 
-        <table>
-            <tr>
-                <th>Provider</th>
-                <th>Environment</th>
-                <th>URL</th>
-                <th>Username</th>
-                <th>Actions</th>
-            </tr>
+    	{% for p in providers %}
+    	<tr>
+        	<td>{{ p.provider_name }}</td>
+      		  <td>{{ p.environment }}</td>
+       		 <td>{{ p.url }}</td>
+        	<td>{{ p.username }}</td>
+        	<td>
+            <a href="/admin/providers/edit/{{ p.id }}" 
+               style="color: blue; font-weight: bold; margin-right: 10px;">Edit</a>
 
-            {% for p in providers %}
-            <tr>
-                <td>{{ p.provider_name }}</td>
-                <td>{{ p.environment }}</td>
-                <td>{{ p.url }}</td>
-                <td>{{ p.username }}</td>
-                <td>
-                    <a href="/admin/providers/edit/{{ p.id }}" class="action-link edit">Edit</a>
-                    <a href="/admin/providers/delete/{{ p.id }}" class="action-link delete"
-                       onclick="return confirm('Delete this provider?');">Delete</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </table>
+            <a href="/admin/providers/delete/{{ p.id }}" 
+               style="color: red; font-weight: bold;"
+               onclick="return confirm('Are you sure you want to delete this provider?');">
+               Delete
+            </a>
+        </td>
+    	</tr>
+    	{% endfor %}
+	</table>
     </div>
 
 </body>
