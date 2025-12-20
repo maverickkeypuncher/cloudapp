@@ -1,82 +1,165 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Your Cloud Requests</title>
+    <title>My Requests</title>
     <style>
         body {
-            background-color: #f2f2f2;
+            margin: 0;
             font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            font-size: 14px; /* medium font */
         }
-        .container {
-            width: 900px;
-            margin: 80px auto;
-            padding: 25px;
+
+        /* LEFT SIDEBAR */
+        .sidebar {
+            width: 200px;
+            background-color: #d7e9ff; /* light blue */
+            color: #003366;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            font-size: 13px;
+            border-right: 1px solid #bcd4f5;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 16px;
+            color: #003366;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px 18px;
+            color: #003366;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            background-color: #bcd4f5;
+        }
+
+        /* TOP BAR */
+        .topbar {
+            width: calc(100% - 200px);
+            height: 55px;
+            background-color: #d7e9ff; /* match sidebar */
+            border-bottom: 1px solid #bcd4f5;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 25px;
+            position: fixed;
+            left: 200px;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar a {
+            color: #003366;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* MAIN CONTENT */
+        .content {
+            margin-left: 230px;
+            margin-top: 90px;
+            width: calc(100% - 300px);
             background: white;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
         }
+
         h2 {
             text-align: center;
+            margin-bottom: 20px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            min-width: 700px;
         }
-        th, td {
-            padding: 12px;
-            border: 1px solid #ccc;
-            text-align: center;
-        }
+
         th {
-            background-color: #2196F3;
+            background-color: #003366;
             color: white;
+            padding: 12px;
         }
-        a {
-            display: block;
-            margin-top: 20px;
+
+        td {
+            padding: 10px;
             text-align: center;
-            color: #333;
+            background-color: #f9fbfd;
+        }
+
+        tr:nth-child(even) td {
+            background-color: #eef3f8;
+        }
+
+        tr:hover td {
+            background-color: #dce7f5;
         }
     </style>
 </head>
-
 <body>
 
-    <div class="container">
-        <h2>{{ username }}'s Cloud Provisioning Requests</h2>
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+        <h2>Cloud Portal</h2>
 
-        {% if requests %}
+        <a href="/requests">My Requests</a>
+
+        {% if session.role == "admin" %}
+        <a href="/admin/requests">Admin Dashboard</a>
+        <a href="/admin/providers">Add Provider</a>
+        <a href="/admin/providers/list">View Configured Providers</a>
+        {% endif %}
+    </div>
+
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <a href="/logout">Logout</a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
+        <h2>My Requests</h2>
+
         <table>
             <tr>
-                <th>Project</th>
+                <th>ID</th>
+                <th>Project Name</th>
                 <th>Datacenter</th>
                 <th>CPU</th>
                 <th>RAM</th>
                 <th>Servers</th>
                 <th>Storage</th>
-                <th>Requested At</th>
+                <th>Status</th>
+                <th>Created At</th>
             </tr>
 
             {% for r in requests %}
             <tr>
+                <td>{{ r.id }}</td>
                 <td>{{ r.project_name }}</td>
                 <td>{{ r.datacenter }}</td>
                 <td>{{ r.cpu }}</td>
                 <td>{{ r.ram }}</td>
                 <td>{{ r.num_servers }}</td>
                 <td>{{ r.storage }}</td>
+                <td>{{ r.status }}</td>
                 <td>{{ r.created_at }}</td>
             </tr>
             {% endfor %}
         </table>
-        {% else %}
-            <p style="text-align:center; margin-top:20px;">No requests submitted yet.</p>
-        {% endif %}
-
-        <a href="/form">Submit New Request</a>
-        <a href="/logout">Logout</a>
     </div>
 
 </body>
