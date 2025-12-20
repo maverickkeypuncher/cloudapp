@@ -6,38 +6,29 @@ user_bp = Blueprint("user", __name__)
 @user_bp.route("/form", methods=["GET", "POST"])
 def form():
     if request.method == "POST":
-        data = request.get_json(force=True)
+    project_name = request.form.get("project_name")
+    datacenter = request.form.get("datacenter")
+    cpu = request.form.get("cpu")
+    ram = request.form.get("ram")
+    num_servers = request.form.get("num_servers")
+    storage = request.form.get("storage")
 
-        conn = get_db_connection()
-        cursor = conn.cursor()
+    username = session.get("username")
 
-        cursor.execute("""
-            INSERT INTO userrequests 
-            (username, project_name, datacenter, cpu, ram, num_servers, storage)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (
-            session.get("username"),
-            data.get("project_name"),
-            data.get("datacenter"),
-            data.get("cpu"),
-            data.get("ram"),
-            data.get("num_servers"),
-            data.get("storage")
-        ))
+    conn = get_db_connection()
+    cursor = conn.cursor()
 
-        conn.commit()
-        cursor.close()
-        conn.close()
+    cursor.execute("""
+        INSERT INTO userrequests 
+        (username, project_name, datacenter, cpu, ram, num_servers, storage)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """, (username, project_name, datacenter, cpu, ram, num_servers, storage))
 
-        return jsonify({"status": "ok"})
+    conn.commit()
+    cursor.close()
+    conn.close()
 
-    return render_template(
-        "form.html",
-        datacenters=["DUBAI", "ABU DHABI"],
-        num_servers_options=list(range(1, 11)),
-        storage_options=["100GB", "200GB", "500GB", "1024GB", "2048GB"]
-    )
-
+    return render_template("success.html")
 
 @user_bp.route("/requests")
 def requests_page():
