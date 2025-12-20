@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Admin Requests</title>
+    <title>Cloud Request Form</title>
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #f4f6f9;
-            font-size: 14px; /* medium font */
+            font-size: 14px;
         }
 
-        /* LEFT SIDEBAR */
         .sidebar {
             width: 200px;
-            background-color: #d7e9ff; /* light blue */
+            background-color: #d7e9ff;
             color: #003366;
             height: 100vh;
             padding-top: 20px;
@@ -43,11 +42,10 @@
             background-color: #bcd4f5;
         }
 
-        /* TOP BAR */
         .topbar {
             width: calc(100% - 200px);
             height: 55px;
-            background-color: #d7e9ff; /* match sidebar */
+            background-color: #d7e9ff;
             border-bottom: 1px solid #bcd4f5;
             display: flex;
             justify-content: flex-end;
@@ -66,11 +64,10 @@
             font-size: 14px;
         }
 
-        /* MAIN CONTENT */
         .content {
             margin-left: 230px;
             margin-top: 90px;
-            width: calc(100% - 300px);
+            width: 450px;
             background: white;
             padding: 25px;
             border-radius: 10px;
@@ -82,43 +79,58 @@
             margin-bottom: 20px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 900px;
+        input, select {
+            width: 95%;
+            padding: 10px;
+            margin: 8px 0 15px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 14px;
         }
 
-        th {
-            background-color: #bcd4f5; /* lighter header */
-            color: #003366;
+        button {
+            width: 100%;
             padding: 12px;
+            background-color: #4da3ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
             font-weight: bold;
         }
 
-        td {
-            padding: 10px;
+        button:hover {
+            background-color: #1e7fe6;
+        }
+
+        /* Success message box */
+        #successMessage {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 15px;
             text-align: center;
-            background-color: #f9fbfd;
+            font-weight: bold;
+            animation: fadeIn 0.4s ease-in-out;
         }
 
-        tr:nth-child(even) td {
-            background-color: #eef3f8;
-        }
-
-        tr:hover td {
-            background-color: #dce7f5;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <!-- LEFT SIDEBAR -->
     <div class="sidebar">
         <h2>Cloud Portal</h2>
 
         <a href="/form">Request Form</a>
-
-	<a href="/requests">My Requests</a>
+        <a href="/requests">My Requests</a>
 
         {% if session.role == "admin" %}
         <a href="/admin/requests">Admin Dashboard</a>
@@ -127,45 +139,85 @@
         {% endif %}
     </div>
 
-    <!-- TOP BAR -->
     <div class="topbar">
         <a href="/logout">Logout</a>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="content">
-        <h2>All User Requests</h2>
+        <h2>Cloud Request Form</h2>
 
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>User</th>
-                <th>Project Name</th>
-                <th>Datacenter</th>
-                <th>CPU</th>
-                <th>RAM</th>
-                <th>Servers</th>
-                <th>Storage</th>
-                <th>Status</th>
-                <th>Created At</th>
-            </tr>
+        <!-- Success Banner -->
+        <div id="successMessage">Request submitted successfully!</div>
 
-            {% for r in requests %}
-            <tr>
-                <td>{{ r.id }}</td>
-                <td>{{ r.username }}</td>
-                <td>{{ r.project_name }}</td>
-                <td>{{ r.datacenter }}</td>
-                <td>{{ r.cpu }}</td>
-                <td>{{ r.ram }}</td>
-                <td>{{ r.num_servers }}</td>
-                <td>{{ r.storage }}</td>
-                <td>{{ r.status }}</td>
-                <td>{{ r.created_at }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <form id="requestForm">
+
+            <label>Project Name</label>
+            <input type="text" name="project_name" required>
+
+            <label>Datacenter</label>
+            <select name="datacenter" required>
+                {% for dc in datacenters %}
+                <option value="{{ dc }}">{{ dc }}</option>
+                {% endfor %}
+            </select>
+
+            <label>CPU</label>
+            <input type="number" name="cpu" required>
+
+            <label>RAM (GB)</label>
+            <input type="number" name="ram" required>
+
+            <label>Number of Servers</label>
+            <select name="num_servers" required>
+                {% for n in num_servers_options %}
+                <option value="{{ n }}">{{ n }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Storage</label>
+            <select name="storage" required>
+                {% for s in storage_options %}
+                <option value="{{ s }}">{{ s }}</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Submit Request</button>
+        </form>
     </div>
+
+    <script>
+        document.getElementById("requestForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const jsonData = Object.fromEntries(formData.entries());
+
+            fetch("/form", {
+                method: "POST",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify(jsonData)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "ok") {
+                    const msg = document.getElementById("successMessage");
+                    msg.style.display = "block";
+
+                    setTimeout(() => {
+                        msg.style.display = "none";
+                    }, 3000);
+
+                    document.getElementById("requestForm").reset();
+                }
+            })
+            .catch(err => {
+                alert("Error submitting request.");
+            });
+        });
+    </script>
 
 </body>
 </html>
