@@ -10,7 +10,6 @@
             font-size: 14px;
         }
 
-        /* LEFT SIDEBAR */
         .sidebar {
             width: 200px;
             background-color: #d7e9ff;
@@ -43,7 +42,6 @@
             background-color: #bcd4f5;
         }
 
-        /* TOP BAR */
         .topbar {
             width: calc(100% - 200px);
             height: 55px;
@@ -66,7 +64,6 @@
             font-size: 14px;
         }
 
-        /* MAIN CONTENT */
         .content {
             margin-left: 230px;
             margin-top: 90px;
@@ -110,12 +107,11 @@
 </head>
 <body>
 
-    <!-- LEFT SIDEBAR -->
     <div class="sidebar">
         <h2>Cloud Portal</h2>
 
         <a href="/form">Request Form</a>
-	<a href="/requests">My Requests</a>
+        <a href="/requests">My Requests</a>
 
         {% if session.role == "admin" %}
         <a href="/admin/requests">Admin Dashboard</a>
@@ -124,12 +120,10 @@
         {% endif %}
     </div>
 
-    <!-- TOP BAR -->
     <div class="topbar">
         <a href="/logout">Logout</a>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="content">
         <h2>Cloud Request Form</h2>
 
@@ -169,7 +163,6 @@
         </form>
     </div>
 
-    <!-- AJAX SUBMISSION + POPUP -->
     <script>
         document.getElementById("requestForm").addEventListener("submit", function(e) {
             e.preventDefault();
@@ -184,13 +177,11 @@
             })
             .then(res => res.json())
             .then(data => {
-                if (data.status === "ok") {
-                    alert("Request submitted successfully!");
-                    document.getElementById("requestForm").reset();
-                }
+                alert("Request submitted successfully!");
+                this.reset();
             })
             .catch(err => {
-                alert("Something went wrong while submitting the request.");
+                alert("Error submitting request.");
             });
         });
     </script>
