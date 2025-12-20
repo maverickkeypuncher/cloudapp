@@ -4,42 +4,73 @@
     <title>Provision Cloud Service</title>
     <style>
         body {
-            background-color: #f2f2f2;
-            font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-        }
-
-        /* Navigation Bar */
-        .navbar {
-            background-color: #007bff;
-            padding: 15px 25px;
-            color: white;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
         }
 
-        .navbar a {
+        /* LEFT SIDEBAR */
+        .sidebar {
+            width: 230px;
+            background-color: #1e3a8a; /* deep blue */
+            color: white;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 20px;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 12px 20px;
             color: white;
             text-decoration: none;
-            margin-right: 20px;
+            font-size: 15px;
+        }
+
+        .sidebar a:hover {
+            background-color: #3b82f6;
+        }
+
+        /* TOP BAR */
+        .topbar {
+            width: 100%;
+            height: 60px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 25px;
+            position: fixed;
+            left: 230px;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar a {
+            color: #1e3a8a;
             font-weight: bold;
+            text-decoration: none;
         }
 
-        .navbar a:hover {
-            text-decoration: underline;
-        }
-
-        .container {
+        /* MAIN CONTENT */
+        .content {
+            margin-left: 260px;
+            margin-top: 80px;
             width: 450px;
-            margin: 120px auto;
-            padding: 25px;
             background: white;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            text-align: left;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
         }
 
         h2 {
@@ -57,7 +88,7 @@
         button {
             width: 100%;
             padding: 12px;
-            background-color: #2196F3;
+            background-color: #1e3a8a;
             color: white;
             border: none;
             border-radius: 4px;
@@ -66,14 +97,7 @@
         }
 
         button:hover {
-            background-color: #1976D2;
-        }
-
-        a {
-            display: block;
-            margin-top: 15px;
-            text-align: center;
-            color: #333;
+            background-color: #3b82f6;
         }
 
         /* Modal styles */
@@ -119,22 +143,26 @@
 </head>
 <body>
 
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <div>
-            <a href="/requests">My Requests</a>
-            {% if session.role == "admin" %}
-            <a href="/admin/requests">Admin Dashboard</a>
-            <a href="/admin/providers">Add Provider</a>
-	    <a href="/admin/providers/list">View Configured Providers</a>
-            {% endif %}
-        </div>
-        <div>
-            <a href="/logout">Logout</a>
-        </div>
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+        <h2>Cloud Portal</h2>
+
+        <a href="/requests">My Requests</a>
+
+        {% if session.role == "admin" %}
+        <a href="/admin/requests">Admin Dashboard</a>
+        <a href="/admin/providers">Add Provider</a>
+        <a href="/admin/providers/list">View Configured Providers</a>
+        {% endif %}
     </div>
 
-    <div class="container">
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <a href="/logout">Logout</a>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="content">
         <h2>Provision Cloud Service</h2>
 
         <form id="provisionForm">
@@ -171,7 +199,6 @@
 
             <button type="submit">Submit</button>
         </form>
-
     </div>
 
     <!-- Modal -->
