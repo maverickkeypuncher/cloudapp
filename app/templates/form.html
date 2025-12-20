@@ -103,6 +103,25 @@
         button:hover {
             background-color: #1e7fe6;
         }
+
+        /* Success message box */
+        #successMessage {
+            display: none;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            padding: 12px;
+            border-radius: 5px;
+            margin-top: 15px;
+            text-align: center;
+            font-weight: bold;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -126,6 +145,9 @@
 
     <div class="content">
         <h2>Cloud Request Form</h2>
+
+        <!-- Success Banner -->
+        <div id="successMessage">Request submitted successfully!</div>
 
         <form id="requestForm">
 
@@ -172,13 +194,24 @@
 
             fetch("/form", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
                 body: JSON.stringify(jsonData)
             })
             .then(res => res.json())
             .then(data => {
-                alert("Request submitted successfully!");
-                this.reset();
+                if (data.status === "ok") {
+                    const msg = document.getElementById("successMessage");
+                    msg.style.display = "block";
+
+                    setTimeout(() => {
+                        msg.style.display = "none";
+                    }, 3000);
+
+                    document.getElementById("requestForm").reset();
+                }
             })
             .catch(err => {
                 alert("Error submitting request.");
