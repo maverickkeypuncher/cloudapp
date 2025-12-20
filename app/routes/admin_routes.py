@@ -3,7 +3,7 @@ from db import get_db_connection
 
 admin_bp = Blueprint("admin", __name__)
 
-@admin_bp.route("/admin/requests")
+@admin_bp.route("/requests")
 def admin_request():
     if session.get("role") != "admin":
         return redirect(url_for("auth.login"))
