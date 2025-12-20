@@ -6,29 +6,29 @@ user_bp = Blueprint("user", __name__)
 @user_bp.route("/form", methods=["GET", "POST"])
 def form():
     if request.method == "POST":
-    project_name = request.form.get("project_name")
-    datacenter = request.form.get("datacenter")
-    cpu = request.form.get("cpu")
-    ram = request.form.get("ram")
-    num_servers = request.form.get("num_servers")
-    storage = request.form.get("storage")
+        project_name = request.form.get("project_name")
+        datacenter = request.form.get("datacenter")
+        cpu = request.form.get("cpu")
+        ram = request.form.get("ram")
+        num_servers = request.form.get("num_servers")
+        storage = request.form.get("storage")
 
-    username = session.get("username")
+        username = session.get("username")
 
-    conn = get_db_connection()
-    cursor = conn.cursor()
+        conn = get_db_connection()
+        cursor = conn.cursor()
 
-    cursor.execute("""
+        cursor.execute("""
         INSERT INTO userrequests 
         (username, project_name, datacenter, cpu, ram, num_servers, storage)
         VALUES (%s, %s, %s, %s, %s, %s, %s)
     """, (username, project_name, datacenter, cpu, ram, num_servers, storage))
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+        conn.commit()
+        cursor.close()
+        conn.close()
 
-    return render_template("success.html")
+        return render_template("success.html")
 
 @user_bp.route("/requests")
 def requests_page():
