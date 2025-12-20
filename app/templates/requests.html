@@ -7,13 +7,13 @@
             margin: 0;
             font-family: Arial, sans-serif;
             background-color: #f4f6f9;
-            font-size: 14px; /* medium font */
+            font-size: 14px;
         }
 
-        /* LEFT SIDEBAR */
+        /* SIDEBAR */
         .sidebar {
             width: 200px;
-            background-color: #d7e9ff; /* light blue */
+            background-color: #d7e9ff;
             color: #003366;
             height: 100vh;
             padding-top: 20px;
@@ -43,11 +43,11 @@
             background-color: #bcd4f5;
         }
 
-        /* TOP BAR */
+        /* TOPBAR */
         .topbar {
             width: calc(100% - 200px);
             height: 55px;
-            background-color: #d7e9ff; /* match sidebar */
+            background-color: #d7e9ff;
             border-bottom: 1px solid #bcd4f5;
             display: flex;
             justify-content: flex-end;
@@ -70,55 +70,77 @@
         .content {
             margin-left: 230px;
             margin-top: 90px;
-            width: calc(100% - 300px);
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+            padding: 20px;
         }
 
         h2 {
-            text-align: center;
             margin-bottom: 20px;
+            color: #003366;
+        }
+
+        /* TABLE CONTAINER */
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: white;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 700px;
+            font-size: 13px;
+        }
+
+        th, td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
         }
 
         th {
-            background-color: #bcd4f5;
+            background-color: #d7e9ff;
             color: #003366;
-	    padding: 12px;
-	    font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 5;
         }
 
-        td {
-            padding: 10px;
-            text-align: center;
-            background-color: #f9fbfd;
+        tr:hover {
+            background-color: #f1f7ff;
         }
 
-        tr:nth-child(even) td {
-            background-color: #eef3f8;
+        /* PAGINATION */
+        .pagination {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
         }
 
-        tr:hover td {
-            background-color: #dce7f5;
+        .pagination button {
+            padding: 6px 12px;
+            border: 1px solid #003366;
+            background-color: white;
+            color: #003366;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
 
-    <!-- LEFT SIDEBAR -->
+    <!-- SIDEBAR -->
     <div class="sidebar">
         <h2>Cloud Portal</h2>
 
         <a href="/form">Request Form</a>
-
-	<a href="/requests">My Requests</a>
+        <a href="/requests">My Requests</a>
 
         {% if session.role == "admin" %}
         <a href="/admin/requests">Admin Dashboard</a>
@@ -127,7 +149,7 @@
         {% endif %}
     </div>
 
-    <!-- TOP BAR -->
+    <!-- TOPBAR -->
     <div class="topbar">
         <a href="/logout">Logout</a>
     </div>
@@ -136,34 +158,105 @@
     <div class="content">
         <h2>My Requests</h2>
 
-        <table>
-            <tr>
-                <th>ID</th>
-                <th>Project Name</th>
-                <th>Datacenter</th>
-                <th>CPU</th>
-                <th>RAM</th>
-                <th>Servers</th>
-                <th>Storage</th>
-                <th>Status</th>
-                <th>Created At</th>
-            </tr>
+        <!-- SEARCH BAR -->
+        <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search your requests..." 
+            style="
+                width: 300px;
+                padding: 8px;
+                margin-bottom: 15px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+            "
+        >
 
-            {% for r in requests %}
-            <tr>
-                <td>{{ r.id }}</td>
-                <td>{{ r.project_name }}</td>
-                <td>{{ r.datacenter }}</td>
-                <td>{{ r.cpu }}</td>
-                <td>{{ r.ram }}</td>
-                <td>{{ r.num_servers }}</td>
-                <td>{{ r.storage }}</td>
-                <td>{{ r.status }}</td>
-                <td>{{ r.created_at }}</td>
-            </tr>
-            {% endfor %}
-        </table>
+        <!-- TABLE WITH SCROLL -->
+        <div class="table-container">
+            <table id="requestsTable">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Datacenter</th>
+                        <th>CPU</th>
+                        <th>RAM</th>
+                        <th>Servers</th>
+                        <th>Storage</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for req in requests %}
+                    <tr>
+                        <td>{{ req.project_name }}</td>
+                        <td>{{ req.datacenter }}</td>
+                        <td>{{ req.cpu }}</td>
+                        <td>{{ req.ram }}</td>
+                        <td>{{ req.num_servers }}</td>
+                        <td>{{ req.storage }}</td>
+                        <td>{{ req.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- PAGINATION -->
+        <div class="pagination">
+            <button id="prevBtn">Previous</button>
+            <button id="nextBtn">Next</button>
+        </div>
     </div>
+
+<!-- SEARCH + PAGINATION SCRIPT -->
+<script>
+    const rowsPerPage = 10;
+    let currentPage = 1;
+
+    const table = document.getElementById("requestsTable");
+    const rows = table.querySelectorAll("tbody tr");
+
+    function renderTable() {
+        let start = (currentPage - 1) * rowsPerPage;
+        let end = start + rowsPerPage;
+
+        rows.forEach((row, index) => {
+            row.style.display = (index >= start && index < end) ? "" : "none";
+        });
+
+        document.getElementById("prevBtn").disabled = currentPage === 1;
+        document.getElementById("nextBtn").disabled = end >= rows.length;
+    }
+
+    document.getElementById("prevBtn").onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderTable();
+        }
+    };
+
+    document.getElementById("nextBtn").onclick = () => {
+        if ((currentPage * rowsPerPage) < rows.length) {
+            currentPage++;
+            renderTable();
+        }
+    };
+
+    // SEARCH FILTER
+    document.getElementById("searchInput").addEventListener("keyup", function () {
+        let filter = this.value.toLowerCase();
+
+        rows.forEach(row => {
+            let text = row.innerText.toLowerCase();
+            row.style.display = text.includes(filter) ? "" : "none";
+        });
+    });
+
+    // Initial render
+    renderTable();
+</script>
 
 </body>
 </html>
