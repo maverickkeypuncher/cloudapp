@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, session, redirect, url_for
 from db import get_db_connection
 
+print("ADMIN ROUTES LOADED")
 admin_bp = Blueprint("admin", __name__)
 
 @admin_bp.route("/requests")
