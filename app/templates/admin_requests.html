@@ -4,58 +4,94 @@
     <title>Admin Requests</title>
     <style>
         body {
+            margin: 0;
             font-family: Arial, sans-serif;
             background-color: #f4f6f9;
-            margin: 0;
-            padding: 0;
+            font-size: 14px; /* medium font */
         }
 
-        /* Top navigation bar */
-        .navbar {
-            background-color: #007bff;
-            padding: 15px 25px;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* LEFT SIDEBAR */
+        .sidebar {
+            width: 200px;
+            background-color: #d7e9ff; /* light blue */
+            color: #003366;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            font-size: 13px;
+            border-right: 1px solid #bcd4f5;
         }
 
-        .navbar a {
-            color: white;
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 16px;
+            color: #003366;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px 18px;
+            color: #003366;
             text-decoration: none;
-            margin-right: 20px;
             font-weight: bold;
         }
 
-        .navbar a:hover {
-            text-decoration: underline;
+        .sidebar a:hover {
+            background-color: #bcd4f5;
         }
 
-        .container {
-            width: 80%;
-            margin: 40px auto;
+        /* TOP BAR */
+        .topbar {
+            width: calc(100% - 200px);
+            height: 55px;
+            background-color: #d7e9ff; /* match sidebar */
+            border-bottom: 1px solid #bcd4f5;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 25px;
+            position: fixed;
+            left: 200px;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar a {
+            color: #003366;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* MAIN CONTENT */
+        .content {
+            margin-left: 230px;
+            margin-top: 90px;
+            width: calc(100% - 300px);
             background: white;
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 0 12px rgba(0,0,0,0.1);
         }
 
-        h1 {
+        h2 {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: auto;
+            min-width: 900px;
         }
 
         th {
-            background-color: #007bff;
+            background-color: #003366;
             color: white;
             padding: 12px;
-            text-align: center;
         }
 
         td {
@@ -75,27 +111,38 @@
 </head>
 <body>
 
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <div>
-            <a href="/form">Back to Form</a>
-            <a href="/admin/requests">Admin Dashboard</a>
-	    <a href="/admin/providers/list">View Configured Providers</a>
-        </div>
-        <div>
-            <a href="/logout">Logout</a>
-        </div>
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+        <h2>Cloud Portal</h2>
+
+        <a href="/requests">My Requests</a>
+
+        {% if session.role == "admin" %}
+        <a href="/admin/requests">Admin Dashboard</a>
+        <a href="/admin/providers">Add Provider</a>
+        <a href="/admin/providers/list">View Configured Providers</a>
+        {% endif %}
     </div>
 
-    <div class="container">
-        <h1>All User Requests</h1>
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <a href="/logout">Logout</a>
+    </div>
 
-        <table border="1">
+    <!-- MAIN CONTENT -->
+    <div class="content">
+        <h2>All User Requests</h2>
+
+        <table>
             <tr>
                 <th>ID</th>
-                <th>Username</th>
-                <th>Request Type</th>
-                <th>Details</th>
+                <th>User</th>
+                <th>Project Name</th>
+                <th>Datacenter</th>
+                <th>CPU</th>
+                <th>RAM</th>
+                <th>Servers</th>
+                <th>Storage</th>
                 <th>Status</th>
                 <th>Created At</th>
             </tr>
@@ -104,8 +151,12 @@
             <tr>
                 <td>{{ r.id }}</td>
                 <td>{{ r.username }}</td>
-                <td>{{ r.request_type }}</td>
-                <td>{{ r.details }}</td>
+                <td>{{ r.project_name }}</td>
+                <td>{{ r.datacenter }}</td>
+                <td>{{ r.cpu }}</td>
+                <td>{{ r.ram }}</td>
+                <td>{{ r.num_servers }}</td>
+                <td>{{ r.storage }}</td>
                 <td>{{ r.status }}</td>
                 <td>{{ r.created_at }}</td>
             </tr>
