@@ -120,7 +120,7 @@ def edit_provider(id):
 
     cursor.close()
     conn.close()
-    return render_template("provider_edit.html", provider=provider)
+    return render_template("providers_edit.html", provider=provider)
 
 @app.route("/admin/providers/delete/<int:id>")
 def delete_provider(id):
