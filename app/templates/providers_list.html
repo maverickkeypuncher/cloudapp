@@ -9,7 +9,6 @@
             background-color: #f4f6f9;
         }
 
-        /* LEFT SIDEBAR */
         .sidebar {
             width: 230px;
             background-color: #1e3a8a;
@@ -39,7 +38,6 @@
             background-color: #3b82f6;
         }
 
-        /* TOP BAR */
         .topbar {
             width: calc(100% - 230px);
             height: 60px;
@@ -61,7 +59,6 @@
             text-decoration: none;
         }
 
-        /* MAIN CONTENT */
         .content {
             margin-left: 260px;
             margin-top: 80px;
@@ -70,17 +67,25 @@
             padding: 25px;
             border-radius: 10px;
             box-shadow: 0 0 12px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            min-width: 700px;
         }
 
         th {
             background-color: #1e3a8a;
             color: white;
             padding: 12px;
+            text-align: center;
         }
 
         td {
@@ -113,7 +118,6 @@
 </head>
 <body>
 
-    <!-- SIDEBAR -->
     <div class="sidebar">
         <h2>Cloud Portal</h2>
 
@@ -126,12 +130,10 @@
         {% endif %}
     </div>
 
-    <!-- TOP BAR -->
     <div class="topbar">
         <a href="/logout">Logout</a>
     </div>
 
-    <!-- MAIN CONTENT -->
     <div class="content">
         <h2>Configured Providers</h2>
 
