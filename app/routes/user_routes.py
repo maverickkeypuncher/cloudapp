@@ -6,14 +6,25 @@ user_bp = Blueprint("user", __name__)
 @user_bp.route("/form", methods=["GET", "POST"])
 def form():
     if request.method == "POST":
-        project_name = request.form.get("project_name")
-        datacenter = request.form.get("datacenter")
-        cpu = request.form.get("cpu")
-        ram = request.form.get("ram")
-        num_servers = request.form.get("num_servers")
-        storage = request.form.get("storage")
+        # Read JSON safely from AJAX
+        data = request.get_json(silent=True)
+        print("DEBUG JSON RECEIVED:", data)
+
+        if not data:
+            return jsonify({"status": "error", "message": "No JSON received"}), 400
+
+        project_name = data.get("project_name")
+        datacenter = data.get("datacenter")
+        cpu = data.get("cpu")
+        ram = data.get("ram")
+        num_servers = data.get("num_servers")
+        storage = data.get("storage")
 
         username = session.get("username")
+
+        # Extra safety check
+        if not username:
+            return jsonify({"status": "error", "message": "User not logged in"}), 401
 
         conn = get_db_connection()
         cursor = conn.cursor()
@@ -28,19 +39,21 @@ def form():
         cursor.close()
         conn.close()
 
-        return render_template("success.html")
+        return jsonify({"status": "ok"})
 
     # GET request → show the form
     return render_template(
         "form.html",
         datacenters=["DUBAI", "ABU DHABI"],
-        num_servers_options=[1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+        num_servers_options=[1,2,3,4,5,6,7,8,9,10],
         storage_options=["100GB", "200GB", "500GB", "1024GB", "2048GB"]
     )
+
 
 @user_bp.route("/requests")
 def requests_page():
     username = session.get("username")
+
     if not username:
         return redirect(url_for("auth.login"))
 
@@ -48,13 +61,21 @@ def requests_page():
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
-        SELECT project_name, datacenter, cpu, ram, num_servers, storage, created_at
+        SELECT 
+            project_name,
+            datacenter,
+            cpu,
+            ram,
+            num_servers,
+            storage,
+            created_at
         FROM userrequests
         WHERE username = %s
         ORDER BY created_at DESC
     """, (username,))
 
     rows = cursor.fetchall()
+
     cursor.close()
     conn.close()
 
