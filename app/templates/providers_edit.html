@@ -2,40 +2,202 @@
 <html>
 <head>
     <title>Edit Provider</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            font-size: 14px; /* medium font */
+        }
+
+        /* LEFT SIDEBAR */
+        .sidebar {
+            width: 200px;
+            background-color: #d7e9ff; /* light blue */
+            color: #003366;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            font-size: 13px;
+            border-right: 1px solid #bcd4f5;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 16px;
+            color: #003366;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px 18px;
+            color: #003366;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            background-color: #bcd4f5;
+        }
+
+        /* TOP BAR */
+        .topbar {
+            width: calc(100% - 200px);
+            height: 55px;
+            background-color: #d7e9ff; /* match sidebar */
+            border-bottom: 1px solid #bcd4f5;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 25px;
+            position: fixed;
+            left: 200px;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar a {
+            color: #003366;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* MAIN CONTENT */
+        .content {
+            margin-left: 230px;
+            margin-top: 90px;
+            width: 450px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input, select {
+            width: 95%;
+            padding: 10px;
+            margin: 8px 0 15px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4da3ff; /* light blue button */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #1e7fe6;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 8px 14px;
+            background-color: #bcd4f5;
+            color: #003366;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .back-btn:hover {
+            background-color: #a9c7ef;
+        }
+
+        .msg-success {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .msg-error {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Edit Provider</h2>
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+        <h2>Cloud Portal</h2>
 
-    <form method="POST">
+        <a href="/requests">My Requests</a>
 
-        <label>Provider</label>
-        <select name="provider" required>
-            <option value="vmware" {% if provider.provider_name == "vmware" %}selected{% endif %}>VMware vCenter</option>
-            <option value="openstack" {% if provider.provider_name == "openstack" %}selected{% endif %}>OpenStack</option>
-            <option value="kubernetes" {% if provider.provider_name == "kubernetes" %}selected{% endif %}>Kubernetes</option>
-        </select>
+        {% if session.role == "admin" %}
+        <a href="/admin/requests">Admin Dashboard</a>
+        <a href="/admin/providers">Add Provider</a>
+        <a href="/admin/providers/list">View Configured Providers</a>
+        {% endif %}
+    </div>
 
-        <label>Environment</label>
-        <select name="environment" required>
-            <option value="Dev" {% if provider.environment == "Dev" %}selected{% endif %}>Dev</option>
-            <option value="Production" {% if provider.environment == "Production" %}selected{% endif %}>Production</option>
-            <option value="Non-Production" {% if provider.environment == "Non-Production" %}selected{% endif %}>Non-Production</option>
-        </select>
+    <!-- TOP BAR -->
+    <div class="topbar">
+        <a href="/logout">Logout</a>
+    </div>
 
-        <label>URL</label>
-        <input type="text" name="url" value="{{ provider.url }}" required>
+    <!-- MAIN CONTENT -->
+    <div class="content">
+        <h2>Edit Provider</h2>
 
-        <label>Username</label>
-        <input type="text" name="username" value="{{ provider.username }}" required>
+        <a href="/admin/providers/list" class="back-btn">← Back</a>
 
-        <label>Password</label>
-        <input type="password" name="password" value="{{ provider.password }}" required>
+        {% if message %}
+            <p class="msg-success">{{ message }}</p>
+        {% endif %}
 
-        <button type="submit">Update Provider</button>
-    </form>
-</div>
+        {% if error %}
+            <p class="msg-error">{{ error }}</p>
+        {% endif %}
+
+        <form method="POST">
+
+            <label>Provider</label>
+            <select name="provider" required>
+                <option value="vmware" {% if provider.provider_name == "vmware" %}selected{% endif %}>VMware vCenter</option>
+                <option value="openstack" {% if provider.provider_name == "openstack" %}selected{% endif %}>OpenStack</option>
+                <option value="kubernetes" {% if provider.provider_name == "kubernetes" %}selected{% endif %}>Kubernetes</option>
+            </select>
+
+            <label>Environment</label>
+            <select name="environment" required>
+                <option value="Dev" {% if provider.environment == "Dev" %}selected{% endif %}>Dev</option>
+                <option value="Production" {% if provider.environment == "Production" %}selected{% endif %}>Production</option>
+                <option value="Non-Production" {% if provider.environment == "Non-Production" %}selected{% endif %}>Non-Production</option>
+            </select>
+
+            <label>Provider URL</label>
+            <input type="text" name="url" value="{{ provider.url }}" required>
+
+            <label>Username</label>
+            <input type="text" name="username" value="{{ provider.username }}" required>
+
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Enter new password">
+
+            <button type="submit">Update Provider</button>
+        </form>
+    </div>
 
 </body>
 </html>
