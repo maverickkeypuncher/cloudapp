@@ -10,7 +10,7 @@ app.secret_key = "CHANGE_THIS_SECRET_KEY"
 # Register Blueprints
 app.register_blueprint(auth_bp)
 app.register_blueprint(user_bp)
-app.register_blueprint(admin_bp)
+app.register_blueprint(admin_bp, url_prefix="/admin")
 app.register_blueprint(provider_bp)
 
 if __name__ == "__main__":
