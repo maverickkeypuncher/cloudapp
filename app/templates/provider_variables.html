@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Variables for {{ provider.provider_name }} ({{ provider.environment }})</h2>
+
+<div style="margin-bottom: 16px;">
+    <a href="{{ url_for('provider_bp.add_provider_variable', provider_id=provider.id) }}" class="btn btn-primary">
+        Add Variable
+    </a>
+    <a href="{{ url_for('provider_bp.admin_providers') }}" class="btn btn-secondary">
+        Back to Providers
+    </a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+            <th>Value</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for var in variables %}
+        <tr>
+            <td>{{ var.name }}</td>
+            <td>{{ var.type }}</td>
+            <td>{{ var.value }}</td>
+            <td>{{ var.created_at }}</td>
+            <td>
+                <a href="{{ url_for('provider_bp.edit_provider_variable', var_id=var.id) }}"
+                   class="btn btn-sm btn-secondary">Edit</a>
+
+                <form action="{{ url_for('provider_bp.delete_provider_variable', var_id=var.id) }}"
+                      method="post" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-danger"
+                            onclick="return confirm('Delete this variable?');">
+                        Delete
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="5">No variables added yet.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

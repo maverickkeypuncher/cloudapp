@@ -35,6 +35,114 @@ def admin_providers():
 
     return render_template("providers.html", message=message, error=error)
 
+@provider_bp.route('/<int:provider_id>/variables')
+def provider_variables(provider_id):
+    cursor = conn.cursor(dictionary=True)
+
+    # Fetch provider info
+    cursor.execute("SELECT * FROM providers WHERE id = %s", (provider_id,))
+    provider = cursor.fetchone()
+
+    if not provider:
+        cursor.close()
+        return "Provider not found", 404
+
+    # Fetch variables for this provider
+    cursor.execute("""
+        SELECT id, name, type, value, created_at
+        FROM provider_variables
+        WHERE provider_id = %s
+        ORDER BY created_at DESC
+    """, (provider_id,))
+    variables = cursor.fetchall()
+
+    cursor.close()
+
+    return render_template(
+        'provider_variables.html',
+        provider=provider,
+        variables=variables
+    )
+
+@provider_bp.route('/<int:provider_id>/variables/add', methods=['GET', 'POST'])
+def add_provider_variable(provider_id):
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM providers WHERE id = %s", (provider_id,))
+    provider = cursor.fetchone()
+
+    if not provider:
+        cursor.close()
+        return "Provider not found", 404
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+        vtype = request.form.get('type')
+        value = request.form.get('value')
+
+        cursor.execute("""
+            INSERT INTO provider_variables (provider_id, name, type, value)
+            VALUES (%s, %s, %s, %s)
+        """, (provider_id, name, vtype, value))
+        conn.commit()
+        cursor.close()
+
+        return redirect(url_for('provider_bp.provider_variables', provider_id=provider_id))
+
+    cursor.close()
+    return render_template('provider_variable_add.html', provider=provider)
+
+@provider_bp.route('/variables/<int:var_id>/edit', methods=['GET', 'POST'])
+def edit_provider_variable(var_id):
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("""
+        SELECT pv.*, p.provider_name, p.environment
+        FROM provider_variables pv
+        JOIN providers p ON pv.provider_id = p.id
+        WHERE pv.id = %s
+    """, (var_id,))
+    var = cursor.fetchone()
+
+    if not var:
+        cursor.close()
+        return "Variable not found", 404
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+        value = request.form.get('value')
+
+        cursor.execute("""
+            UPDATE provider_variables
+            SET name = %s, value = %s
+            WHERE id = %s
+        """, (name, value, var_id))
+        conn.commit()
+        cursor.close()
+
+        return redirect(url_for('provider_bp.provider_variables', provider_id=var['provider_id']))
+
+    cursor.close()
+    return render_template('provider_variable_edit.html', var=var)
+
+@provider_bp.route('/variables/<int:var_id>/delete', methods=['POST'])
+def delete_provider_variable(var_id):
+    cursor = conn.cursor(dictionary=True)
+
+    cursor.execute("SELECT provider_id FROM provider_variables WHERE id = %s", (var_id,))
+    row = cursor.fetchone()
+
+    if not row:
+        cursor.close()
+        return "Variable not found", 404
+
+    provider_id = row['provider_id']
+
+    cursor.execute("DELETE FROM provider_variables WHERE id = %s", (var_id,))
+    conn.commit()
+    cursor.close()
+
+    return redirect(url_for('provider_bp.provider_variables', provider_id=provider_id))
 
 @provider_bp.route("/admin/providers/list")
 def providers_list():

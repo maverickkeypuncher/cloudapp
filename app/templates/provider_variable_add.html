@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Add Variable for {{ provider.provider_name }}</h3>
+
+<form method="post" style="max-width: 500px;">
+    <div class="form-group">
+        <label>Name</label>
+        <input name="name" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label>Type</label>
+        <select name="type" class="form-control" required>
+            <option value="">-- Select Type --</option>
+            <option value="string">string</option>
+            <option value="number">number</option>
+            <option value="bool">bool</option>
+            <option value="password">password</option>
+            <option value="list">list</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Value</label>
+        <input name="value" class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a href="{{ url_for('provider_bp.provider_variables', provider_id=provider.id) }}"
+       class="btn btn-secondary">Cancel</a>
+</form>
+{% endblock %}
