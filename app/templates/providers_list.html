@@ -162,7 +162,7 @@
             {% for p in providers %}
             <tr>
                 <td>
-		    <a href="{{ url_for('provider_bp.provider_variables', provider_id=p.id) }}">
+		    <a href="{{ url_for('provider.provider_variables', provider_id=p.id) }}">
 			{{ p.provider_name }}
 		    </a>
 		</td>
