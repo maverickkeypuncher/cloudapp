@@ -9,6 +9,11 @@
             background-color: #f4f6f9;
             font-size: 14px;
         }
+	
+	.field-block {
+	    margin-bottom: 20px;   /* space between one label+input block and the next */
+	}
+
 
         .sidebar {
             width: 200px;
@@ -153,13 +158,14 @@
 
             <label>Project Name</label>
             <input type="text" name="project_name" required>
-
-            <label>Datacenter</label>
-            <select name="datacenter" required>
-                {% for dc in datacenters %}
-                <option value="{{ dc }}">{{ dc }}</option>
-                {% endfor %}
-            </select>
+	    <div class="field-block">
+            	<label>Datacenter</label>
+            	<select name="datacenter" required>
+                	{% for dc in datacenters %}
+                	<option value="{{ dc }}">{{ dc }}</option>
+                	{% endfor %}
+            	</select>
+	    </div>
 
 	    <label>Operating System</label>
 	    <select name="os" required>
