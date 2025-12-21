@@ -66,6 +66,8 @@ def provider_variables(provider_id):
 
 @provider_bp.route('/<int:provider_id>/variables/add', methods=['GET', 'POST'])
 def add_provider_variable(provider_id):
+    conn = get_db_connection()
+
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT * FROM providers WHERE id = %s", (provider_id,))
@@ -94,6 +96,7 @@ def add_provider_variable(provider_id):
 
 @provider_bp.route('/variables/<int:var_id>/edit', methods=['GET', 'POST'])
 def edit_provider_variable(var_id):
+    conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("""
