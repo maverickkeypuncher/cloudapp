@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Variable</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Edit Variable for {{ var.provider_name }} ({{ var.environment }})</h2>
+
+    <form method="post">
+        <table class="table">
+            <tr>
+                <td>Name</td>
+                <td><input name="name" class="form-control" value="{{ var.name }}" required></td>
+            </tr>
+            <tr>
+                <td>Type</td>
+                <td><input class="form-control" value="{{ var.type }}" disabled></td>
+            </tr>
+            <tr>
+                <td>Value</td>
+                <td><input name="value" class="form-control" value="{{ var.value }}"></td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align:right;">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="{{ url_for('provider.provider_variables', provider_id=var.provider_id) }}"
+                       class="btn btn-secondary">Cancel</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+</body>
+</html>
