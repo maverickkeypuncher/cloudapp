@@ -37,6 +37,7 @@ def admin_providers():
 
 @provider_bp.route('/<int:provider_id>/variables')
 def provider_variables(provider_id):
+    conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     # Fetch provider info
@@ -130,6 +131,7 @@ def edit_provider_variable(var_id):
 
 @provider_bp.route('/variables/<int:var_id>/delete', methods=['POST'])
 def delete_provider_variable(var_id):
+    conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
 
     cursor.execute("SELECT provider_id FROM provider_variables WHERE id = %s", (var_id,))
