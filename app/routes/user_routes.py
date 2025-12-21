@@ -15,6 +15,7 @@ def form():
 
         project_name = data.get("project_name")
         datacenter = data.get("datacenter")
+        operatingsystem = data.get("os")
         cpu = data.get("cpu")
         ram = data.get("ram")
         num_servers = data.get("num_servers")
@@ -31,9 +32,9 @@ def form():
 
         cursor.execute("""
             INSERT INTO userrequests 
-            (username, project_name, datacenter, cpu, ram, num_servers, storage)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
-        """, (username, project_name, datacenter, cpu, ram, num_servers, storage))
+            (username, project_name, datacenter, operatingsystem, cpu, ram, num_servers, storage)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (username, project_name, datacenter, operatingsystem, cpu, ram, num_servers, storage))
 
         conn.commit()
         cursor.close()
@@ -65,6 +66,7 @@ def requests_page():
         SELECT 
             project_name,
             datacenter,
+            operatingsystem,
             cpu,
             ram,
             num_servers,
