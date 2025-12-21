@@ -8,18 +8,18 @@
 
 <div class="container">
 
-    <h2>Edit Variable for {{ var.provider_name }}</h2>
+    <h2>Edit Variable for {{ var.provider_name }} ({{ var.environment }})</h2>
 
     <form method="post">
-
         <table class="table">
+
             <tr>
                 <td>Name</td>
                 <td><input name="name" class="form-control" value="{{ var.name }}" required></td>
             </tr>
 
             <tr>
-                <td>Type</td>
+                <td>Type (locked)</td>
                 <td><input class="form-control" value="{{ var.type }}" disabled></td>
             </tr>
 
@@ -35,8 +35,8 @@
                        class="btn btn-secondary">Cancel</a>
                 </td>
             </tr>
-        </table>
 
+        </table>
     </form>
 
 </div>

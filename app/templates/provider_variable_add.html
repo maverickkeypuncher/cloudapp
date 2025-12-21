@@ -8,11 +8,11 @@
 
 <div class="container">
 
-    <h2>Add Variable for {{ provider.provider_name }}</h2>
+    <h2>Add Variable for {{ provider.provider_name }} ({{ provider.environment }})</h2>
 
     <form method="post">
-
         <table class="table">
+
             <tr>
                 <td>Name</td>
                 <td><input name="name" class="form-control" required></td>
@@ -44,8 +44,8 @@
                        class="btn btn-secondary">Cancel</a>
                 </td>
             </tr>
-        </table>
 
+        </table>
     </form>
 
 </div>
