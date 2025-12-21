@@ -161,6 +161,13 @@
                 {% endfor %}
             </select>
 
+	    <label>Operating System</label>
+	    <select name="os" required>
+		    {% for oss in operating_system %}
+		    <option value="{{ oss }}">{{ oss }}</option>
+		    {% endfor %}
+	    </select>
+
             <label>CPU</label>
             <input type="number" name="cpu" required>
 
