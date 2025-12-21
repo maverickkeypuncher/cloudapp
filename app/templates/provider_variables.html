@@ -3,10 +3,10 @@
 <h2>Variables for {{ provider.provider_name }} ({{ provider.environment }})</h2>
 
 <div style="margin-bottom: 16px;">
-    <a href="{{ url_for('provider_bp.add_provider_variable', provider_id=provider.id) }}" class="btn btn-primary">
+    <a href="{{ url_for('provider.add_provider_variable', provider_id=provider.id) }}" class="btn btn-primary">
         Add Variable
     </a>
-    <a href="{{ url_for('provider_bp.admin_providers') }}" class="btn btn-secondary">
+    <a href="{{ url_for('provider.admin_providers') }}" class="btn btn-secondary">
         Back to Providers
     </a>
 </div>
