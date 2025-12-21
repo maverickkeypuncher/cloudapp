@@ -90,7 +90,7 @@ def add_provider_variable(provider_id):
         conn.commit()
         cursor.close()
 
-        return redirect(url_for('provider_bp.provider_variables', provider_id=provider_id))
+        return redirect(url_for('provider.provider_variables', provider_id=provider_id))
 
     cursor.close()
     return render_template('provider_variable_add.html', provider=provider)
@@ -124,7 +124,7 @@ def edit_provider_variable(var_id):
         conn.commit()
         cursor.close()
 
-        return redirect(url_for('provider_bp.provider_variables', provider_id=var['provider_id']))
+        return redirect(url_for('provider.provider_variables', provider_id=var['provider_id']))
 
     cursor.close()
     return render_template('provider_variable_edit.html', var=var)
@@ -147,7 +147,7 @@ def delete_provider_variable(var_id):
     conn.commit()
     cursor.close()
 
-    return redirect(url_for('provider_bp.provider_variables', provider_id=provider_id))
+    return redirect(url_for('provider.provider_variables', provider_id=provider_id))
 
 @provider_bp.route("/admin/providers/list")
 def providers_list():
