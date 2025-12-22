@@ -13,5 +13,11 @@ app.register_blueprint(user_bp)
 app.register_blueprint(admin_bp, url_prefix="/admin")
 app.register_blueprint(provider_bp)
 
+
+@app.route('/cloudrequestform')
+def cloudrequestform():
+    return render_template('cloudrequestform.html')
+
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001)
