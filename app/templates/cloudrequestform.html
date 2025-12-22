@@ -1,9 +1,128 @@
-<div style="margin: 20px;">
-  <h2>Select Cloud Provider</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cloud Request Options</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            font-size: 14px;
+        }
 
-  <a href="openstack.html" style="display: inline-block; padding: 10px 20px; margin-right: 10px; background: #007bff; color: white; text-decoration: none; border-radius: 5px;">OpenStack</a>
+        .sidebar {
+            width: 200px;
+            background-color: #d7e9ff;
+            color: #003366;
+            height: 100vh;
+            padding-top: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            font-size: 13px;
+            border-right: 1px solid #bcd4f5;
+        }
 
-  <a href="form.html" style="display: inline-block; padding: 10px 20px; margin-right: 10px; background: #28a745; color: white; text-decoration: none; border-radius: 5px;">VMware</a>
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 16px;
+            color: #003366;
+        }
 
-  <a href="containers.html" style="display: inline-block; padding: 10px 20px; background: #6c757d; color: white; text-decoration: none; border-radius: 5px;">Containers</a>
-</div>
+        .sidebar a {
+            display: block;
+            padding: 10px 18px;
+            color: #003366;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .sidebar a:hover {
+            background-color: #bcd4f5;
+        }
+
+        .topbar {
+            width: calc(100% - 200px);
+            height: 55px;
+            background-color: #d7e9ff;
+            border-bottom: 1px solid #bcd4f5;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 25px;
+            position: fixed;
+            left: 200px;
+            top: 0;
+            z-index: 10;
+        }
+
+        .topbar a {
+            color: #003366;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .content {
+            margin-left: 230px;
+            margin-top: 90px;
+            width: 450px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .provider-link {
+            display: block;
+            padding: 12px;
+            margin: 10px 0;
+            background-color: #4da3ff;
+            color: white;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .provider-link:hover {
+            background-color: #1e7fe6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>Cloud Portal</h2>
+
+        <a href="/cloudrequestform">Request Form</a>
+        <a href="/requests">My Requests</a>
+
+        {% if session.role == "admin" %}
+        <a href="/admin/requests">Admin Dashboard</a>
+        <a href="/admin/providers">Add Provider</a>
+        <a href="/admin/providers/list">View Configured Providers</a>
+        {% endif %}
+    </div>
+
+    <div class="topbar">
+        <a href="/logout">Logout</a>
+    </div>
+
+    <div class="content">
+        <h2>Select Cloud Provider</h2>
+
+        <a class="provider-link" href="/openstack">OpenStack</a>
+        <a class="provider-link" href="/form">VMware</a>
+        <a class="provider-link" href="/containers">Containers</a>
+    </div>
+
+</body>
+</html>

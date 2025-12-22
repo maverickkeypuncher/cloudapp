@@ -35,7 +35,8 @@ def register():
 @auth_bp.route("/", methods=["GET", "POST"])
 def login():
     if "username" in session:
-        return redirect(url_for("user.form"))
+        #return redirect(url_for("user.form"))
+        return redirect("/cloudrequestform")
 
     error = None
 
@@ -53,7 +54,8 @@ def login():
         if row and row["password"] == password:
             session["username"] = username
             session["role"] = row.get("role", "user")
-            return redirect(url_for("user.form"))
+            #return redirect(url_for("user.form"))
+            return redirect("/cloudrequestform")
         else:
             error = "Invalid username or password"
 
