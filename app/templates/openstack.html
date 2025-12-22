@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Cloud Request Form</title>
+    <title>OpenStack Request Form</title>
     <style>
         body {
             margin: 0;
@@ -9,7 +9,6 @@
             background-color: #f4f6f9;
             font-size: 14px;
         }
-	
 
         .sidebar {
             width: 200px;
@@ -105,7 +104,6 @@
             background-color: #1e7fe6;
         }
 
-        /* Success message box */
         #successMessage {
             display: none;
             background-color: #d4edda;
@@ -116,15 +114,10 @@
             margin-top: 15px;
             text-align: center;
             font-weight: bold;
-            animation: fadeIn 0.4s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-5px); }
-            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
+
 <body>
 
     <div class="sidebar">
@@ -145,49 +138,30 @@
     </div>
 
     <div class="content">
-        <h2>Cloud Request Form</h2>
+        <h2>OpenStack Request Form</h2>
 
-        <!-- Success Banner -->
         <div id="successMessage">Request submitted successfully!</div>
 
-        <form id="requestForm">
+        <form id="openstackForm">
 
             <label>Project Name</label>
             <input type="text" name="project_name" required>
-	    <!--<div class="field-block"> -->
-            <label>Datacenter</label>
-            	<select name="datacenter" required>
-                	{% for dc in datacenters %}
-                	<option value="{{ dc }}">{{ dc }}</option>
-                	{% endfor %}
-            	</select>
-		<!--</div>-->
 
-	    <label>Operating System</label>
-	    <select name="operatingsystem" required>
-		    {% for oss in operating_system %}
-		    <option value="{{ oss }}">{{ oss }}</option>
-		    {% endfor %}
-	    </select>
-
-            <label>CPU</label>
-            <input type="number" name="cpu" required>
-
-            <label>RAM (GB)</label>
-            <input type="number" name="ram" required>
-
-            <label>Number of Servers</label>
-            <select name="num_servers" required>
-                {% for n in num_servers_options %}
-                <option value="{{ n }}">{{ n }}</option>
-                {% endfor %}
+            <label>Volume Size</label>
+            <select name="volume_size" required>
+                <option value="1">1GB</option>
+                <option value="5">5GB</option>
+                <option value="10">10GB</option>
+                <option value="100">100GB</option>
+                <option value="1024">1024GB</option>
+                <option value="2048">2048GB</option>
             </select>
 
-            <label>Storage</label>
-            <select name="storage" required>
-                {% for s in storage_options %}
-                <option value="{{ s }}">{{ s }}</option>
-                {% endfor %}
+            <label>Flavor</label>
+            <select name="flavor" required>
+                <option value="m1.tiny">m1.tiny — 1 vCPU, 512MB RAM, 1GB root disk</option>
+                <option value="m1.small">m1.small — 1 vCPU, 2GB RAM, 2GB root disk</option>
+                <option value="m1.medium">m1.medium — 2 vCPU, 4GB RAM, 40GB root disk</option>
             </select>
 
             <button type="submit">Submit Request</button>
@@ -195,15 +169,15 @@
     </div>
 
     <script>
-        document.getElementById("requestForm").addEventListener("submit", function(e) {
+        document.getElementById("openstackForm").addEventListener("submit", function(e) {
             e.preventDefault();
 
             const formData = new FormData(this);
             const jsonData = Object.fromEntries(formData.entries());
 
-            fetch("/form", {
+            fetch("/openstack", {
                 method: "POST",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json",
                     "Accept": "application/json"
                 },
@@ -219,7 +193,7 @@
                         msg.style.display = "none";
                     }, 3000);
 
-                    document.getElementById("requestForm").reset();
+                    document.getElementById("openstackForm").reset();
                 }
             })
             .catch(err => {

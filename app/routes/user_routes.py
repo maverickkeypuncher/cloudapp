@@ -3,6 +3,45 @@ from db import get_db_connection
 
 user_bp = Blueprint("user", __name__)
 
+@user_bp.route("/openstack", methods=["GET", "POST"])
+def openstack():
+    if request.method == "POST":
+        # Read JSON safely from AJAX
+        data = request.get_json(silent=True)
+        print("DEBUG JSON RECEIVED (OPENSTACK):", data)
+
+        if not data:
+            return jsonify({"status": "error", "message": "No JSON received"}), 400
+
+        project_name = data.get("project_name")
+        volume_size = data.get("volume_size")
+        flavor = data.get("flavor")
+
+        username = session.get("username")
+
+        # Extra safety check
+        if not username:
+            return jsonify({"status": "error", "message": "User not logged in"}), 401
+
+        conn = get_db_connection()   # same cloudapp DB
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            INSERT INTO openstack_requests
+            (username, project_name, volume_size, flavor)
+            VALUES (%s, %s, %s, %s)
+        """, (username, project_name, volume_size, flavor))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({"status": "ok"})
+
+    # GET request → render the OpenStack form
+    return render_template("openstack.html")
+
+
 @user_bp.route("/form", methods=["GET", "POST"])
 def form():
     if request.method == "POST":
