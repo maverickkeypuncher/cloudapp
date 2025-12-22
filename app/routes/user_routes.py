@@ -122,3 +122,8 @@ def requests_page():
     conn.close()
 
     return render_template("requests.html", requests=rows, username=username)
+
+@user_bp.route("/cloudrequestform")
+def cloudrequestform():
+    return render_template("cloudrequestform.html")
+
