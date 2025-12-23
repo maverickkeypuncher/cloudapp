@@ -16,9 +16,6 @@ app.register_blueprint(admin_bp, url_prefix="/admin")
 app.register_blueprint(provider_bp)
 
 
-@app.route('/cloudrequestform')
-def cloudrequestform():
-    return render_template('cloudrequestform.html')
 
 
 if __name__ == "__main__":
