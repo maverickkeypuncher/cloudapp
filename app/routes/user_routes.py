@@ -31,7 +31,7 @@ def openstack():
         cursor.execute("""
             INSERT INTO openstack_requests
             (username, project_name, volume_size, flavor, no_of_servers, ostype)
-            VALUES (%s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s)
         """, (username, project_name, volume_size, flavor, no_of_servers, ostype))
 
         conn.commit()
