@@ -28,9 +28,9 @@ def openstack():
 
         cursor.execute("""
             INSERT INTO openstack_requests
-            (username, project_name, volume_size, flavor)
-            VALUES (%s, %s, %s, %s)
-        """, (username, project_name, volume_size, flavor))
+            (username, project_name, volume_size, flavor, no_of_servers)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (username, project_name, volume_size, flavor, no_of_servers))
 
         conn.commit()
         cursor.close()
@@ -39,8 +39,10 @@ def openstack():
         return jsonify({"status": "ok"})
 
     # GET request → render the OpenStack form
-    return render_template("openstack.html")
-
+    return render_template(
+            "openstack.html",
+            no_of_servers=[1,2,3,4,5,6,7,8,9,10]
+        )
 
 @user_bp.route("/form", methods=["GET", "POST"])
 def form():

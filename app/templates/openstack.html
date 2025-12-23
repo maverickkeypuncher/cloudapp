@@ -164,6 +164,15 @@
                 <option value="m1.medium">m1.medium — 2 vCPU, 4GB RAM, 40GB root disk</option>
             </select>
 
+	    
+	    <label>Number of Servers</label>
+            <select name="no_of_servers" required>
+                {% for n in num_servers_options %}
+                <option value="{{ n }}">{{ n }}</option>
+                {% endfor %}
+            </select>
+
+
             <button type="submit">Submit Request</button>
         </form>
     </div>
