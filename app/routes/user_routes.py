@@ -43,7 +43,7 @@ def openstack():
     # GET request → render the OpenStack form
     return render_template(
             "openstack.html",
-            no_of_servers=[1,2,3,4,5,6,7,8,9,10]
+            no_of_servers=[1,2,3,4,5,6,7,8,9,10],
             ostype = ["Windows Server", "RedHat Linux Server"]
         )
 
