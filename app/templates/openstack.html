@@ -156,6 +156,13 @@
                 <option value="1024">1024GB</option>
                 <option value="2048">2048GB</option>
             </select>
+	    
+	    <label>Operating System</label>
+            <select name="ostype" required>
+                {% for n in ostype %}
+                <option value="{{ n }}">{{ n }}</option>
+                {% endfor %}
+            </select>
 
             <label>Flavor</label>
             <select name="flavor" required>

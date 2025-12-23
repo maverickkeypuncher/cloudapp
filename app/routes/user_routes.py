@@ -17,6 +17,7 @@ def openstack():
         volume_size = data.get("volume_size")
         flavor = data.get("flavor")
         no_of_servers = data.get("no_of_servers")
+        ostype = data.get("ostype")
 
         username = session.get("username")
 
@@ -29,9 +30,9 @@ def openstack():
 
         cursor.execute("""
             INSERT INTO openstack_requests
-            (username, project_name, volume_size, flavor, no_of_servers)
+            (username, project_name, volume_size, flavor, no_of_servers, ostype)
             VALUES (%s, %s, %s, %s, %s)
-        """, (username, project_name, volume_size, flavor, no_of_servers))
+        """, (username, project_name, volume_size, flavor, no_of_servers, ostype))
 
         conn.commit()
         cursor.close()
@@ -43,6 +44,7 @@ def openstack():
     return render_template(
             "openstack.html",
             no_of_servers=[1,2,3,4,5,6,7,8,9,10]
+            ostype = ["Windows Server", "RedHat Linux Server"]
         )
 
 @user_bp.route("/form", methods=["GET", "POST"])
