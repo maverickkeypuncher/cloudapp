@@ -16,6 +16,7 @@ def openstack():
         project_name = data.get("project_name")
         volume_size = data.get("volume_size")
         flavor = data.get("flavor")
+        no_of_servers = data.get("no_of_servers")
 
         username = session.get("username")
 
@@ -87,7 +88,7 @@ def form():
     return render_template(
         "form.html",
         datacenters=["DUBAI", "ABU DHABI"],
-        no_of_servers=[1,2,3,4,5,6,7,8,9,10],
+        num_servers_options=[1,2,3,4,5,6,7,8,9,10],
         storage_options=["100GB", "200GB", "500GB", "1024GB", "2048GB"],
         operating_system=["Windows Server","RedHat Enterprise Linux"]
     )
